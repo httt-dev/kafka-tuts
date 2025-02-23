@@ -1,0 +1,84 @@
+version: '3.8'
+
+networks:
+  kafka-network:
+    driver: bridge
+
+volumes:
+  oracle-data:
+  zookeeper-data:
+  kafka-data:
+  connect-data:
+
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
+    networks:
+      - kafka-network
+    ports:
+      - "2181:2181"
+    restart: always
+    environment:
+      - ZOOKEEPER_CLIENT_PORT=2181
+    volumes:
+      - zookeeper-data:/var/lib/zookeeper/data
+      - zookeeper-data:/var/lib/zookeeper/log
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka
+    networks:
+      - kafka-network
+    ports:
+      - "9092:9092"
+      - "19092:19092"
+    restart: always
+    depends_on:
+      - zookeeper
+    environment:
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_LISTENERS=INTERNAL://0.0.0.0:9092,EXTERNAL://0.0.0.0:19092
+      - KAFKA_ADVERTISED_LISTENERS=INTERNAL://kafka:9092,EXTERNAL://localhost:19092
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_INTER_BROKER_LISTENER_NAME=INTERNAL
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+
+  kafka-connect:
+    image: debezium/connect:3.0.0.Final
+    container_name: kafka-connect
+    networks:
+      - kafka-network
+    ports:
+      - "8083:8083"
+    restart: always
+    depends_on:
+      - kafka
+      - zookeeper
+    environment:
+      - GROUP_ID=1
+      - CONFIG_STORAGE_TOPIC=my-connect-configs
+      - OFFSET_STORAGE_TOPIC=my-connect-offsets
+      - STATUS_STORAGE_TOPIC=my-connect-status
+      - BOOTSTRAP_SERVERS=kafka:9092
+    volumes:
+      - connect-data:/kafka/connect
+
+  oracle:
+    image: container-registry.oracle.com/database/express:21.3.0-xe
+    container_name: oracle
+    networks:
+      - kafka-network
+    ports:
+      - "1521:1521"
+    restart: always
+    environment:
+      - ORACLE_PWD=Abc12345
+    volumes:
+      - oracle-data:/opt/oracle/oradata
+      - ./init-oracle.sql:/docker-entrypoint-initdb.d/init-oracle.sql
+      - ./entrypoint.sh:/entrypoint.sh
+    entrypoint: ["/bin/bash", "/entrypoint.sh"]
+    shm_size: '4g'
