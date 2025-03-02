@@ -1,0 +1,117 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0; /* Bỏ margin để chiếm toàn màn hình */
+  background-color: #f4f4f4;
+  height: 100vh; /* Chiếm toàn chiều cao màn hình */
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+  margin: 10px 0; /* Giữ khoảng cách nhỏ cho tiêu đề */
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%; /* Chiếm toàn chiều rộng màn hình */
+  height: calc(100vh - 60px); /* Trừ chiều cao của h1 và margin */
+}
+
+.column {
+  width: 50%; /* Chia đôi đều mỗi cột */
+  height: 100%; /* Chiếm toàn chiều cao của container */
+  overflow-y: auto; /* Thêm thanh cuộn dọc nếu nội dung dài */
+}
+
+.column h2 {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.timeline {
+  width: 100%; /* Chiếm toàn chiều rộng của cột */
+  padding: 10px; /* Thêm padding để không sát mép */
+  box-sizing: border-box;
+}
+
+.event {
+  position: relative;
+  margin: 20px 0;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.event::before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  background: #3498db;
+  border-radius: 50%;
+  transform: translateY(-50%);
+}
+
+.event::after {
+  content: '';
+  position: absolute;
+  left: -6px;
+  top: 50%;
+  width: 2px;
+  height: 100%;
+  background: #3498db;
+  transform: translateY(-50%);
+}
+
+.event:first-child::after {
+  height: 50%;
+  top: 50%;
+}
+
+.event:last-child::after {
+  height: 50%;
+  top: 0;
+}
+
+.event h3 {
+  margin: 0 0 10px;
+  color: #2c3e50;
+}
+
+.event table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.event th, .event td {
+  padding: 8px;
+  border: 1px solid #ddd;
+  text-align: left;
+  font-size: 14px;
+  word-wrap: break-word; /* Tự động wrap khi dữ liệu dài */
+  white-space: pre-wrap; /* Giữ định dạng và ngắt dòng */
+  max-width: 0; /* Giới hạn chiều rộng để wrap hoạt động */
+}
+
+.event th {
+  background-color: #ecf0f1;
+  color: #333;
+}
+
+.event td:nth-child(2) {
+  background-color: #f9ebeb; /* Màu nền cho cột Before */
+}
+
+.event td:nth-child(3) {
+  background-color: #ebf9eb; /* Màu nền cho cột After */
+}
+
+.event td.highlight {
+  background-color: #f1c40f !important; /* Highlight khác biệt */
+}
