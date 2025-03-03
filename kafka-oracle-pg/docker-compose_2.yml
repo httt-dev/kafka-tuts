@@ -46,23 +46,8 @@ services:
     volumes:
       - kafka-data:/var/lib/kafka/data
 
-  schema-registry:
-    image: confluentinc/cp-schema-registry:latest
-    container_name: schema-registry
-    networks:
-      - kafka-network
-    ports:
-      - "8081:8081"
-    restart: always
-    depends_on:
-      - kafka
-    environment:
-      - SCHEMA_REGISTRY_HOST_NAME=schema-registry
-      - SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS=kafka:9092
-      - SCHEMA_REGISTRY_LISTENERS=http://0.0.0.0:8081
-      
   kafka-connect:
-    image: confluentinc/cp-kafka-connect:latest
+    image: debezium/connect:3.0.0.Final
     container_name: kafka-connect
     networks:
       - kafka-network
@@ -72,31 +57,27 @@ services:
     depends_on:
       - kafka
       - zookeeper
-      - schema-registry
     environment:
-      - CONNECT_BOOTSTRAP_SERVERS=kafka:9092
-      - CONNECT_REST_ADVERTISED_HOST_NAME=kafka-connect
-      - CONNECT_GROUP_ID=1
-      - CONNECT_CONFIG_STORAGE_TOPIC=avro-connect-configs
-      - CONNECT_OFFSET_STORAGE_TOPIC=avro-connect-offsets
-      - CONNECT_STATUS_STORAGE_TOPIC=avro-connect-status
-      - CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR=1
-      - CONNECT_STATUS_STORAGE_REPLICATION_FACTOR=1
-      - CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR=1
-      - CONNECT_KEY_CONVERTER=io.confluent.connect.avro.AvroConverter
-      - CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL=http://schema-registry:8081
-      - CONNECT_VALUE_CONVERTER=io.confluent.connect.avro.AvroConverter
-      - CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL=http://schema-registry:8081
-      - CONNECT_PLUGIN_PATH=/usr/share/java,/usr/share/confluent-hub-components
+      - GROUP_ID=1
+      - CONFIG_STORAGE_TOPIC=my-connect-configs
+      - OFFSET_STORAGE_TOPIC=my-connect-offsets
+      - STATUS_STORAGE_TOPIC=my-connect-status
+      - BOOTSTRAP_SERVERS=kafka:9092
     volumes:
-      - connect-data:/var/lib/kafka-connect/data
-      - D:/workspace/kafka/kafka-plugins:/usr/share/confluent-hub-components
-      - ./connectors:/connectors
+      - connect-data:/kafka/connect
 
-    command:
-      - bash
-      - -c
-      - "/etc/confluent/docker/run & /connectors/init-connector.sh && wait"
+  schema-registry:
+    image: confluentinc/cp-schema-registry:latest
+    container_name: schema-registry
+    networks:
+      - kafka-network
+    ports:
+      - "8081:8081"
+    depends_on:
+      - kafka
+    environment:
+      - SCHEMA_REGISTRY_HOST_NAME=schema-registry
+      - SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS=kafka:9092
 
   oracle:
     image: container-registry.oracle.com/database/express:21.3.0-xe
