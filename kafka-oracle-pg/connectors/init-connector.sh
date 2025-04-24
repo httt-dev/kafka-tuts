@@ -11,12 +11,12 @@ sleep 45
 
 # Tạo connector bằng REST API
 curl -X POST -H "Content-Type: application/json" \
-  --data @/connectors/oracle-connector-debezium-sink.json \
+  --data @/connectors/oracle-connector.json \
   http://localhost:8083/connectors
 
 
 curl -X POST -H "Content-Type: application/json" \
-  --data @/connectors/postgresql-connector-debezium-sink.json \
+  --data @/connectors/postgresql-connector.json \
   http://localhost:8083/connectors
 
 echo "Connector initialized!"

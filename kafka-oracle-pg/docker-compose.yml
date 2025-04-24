@@ -98,19 +98,19 @@ services:
       - -c
       - "/etc/confluent/docker/run & /connectors/init-connector.sh && wait"
 
-  oracle:
-    image: container-registry.oracle.com/database/express:21.3.0-xe
-    container_name: oracle
-    networks:
-      - kafka-network
-    ports:
-      - "1521:1521"
-    restart: always
-    environment:
-      - ORACLE_PWD=Abc12345
-    volumes:
-      - oracle-data:/opt/oracle/oradata
-      - ./init-oracle.sql:/docker-entrypoint-initdb.d/init-oracle.sql
-      - ./entrypoint.sh:/entrypoint.sh
-    entrypoint: ["/bin/bash", "/entrypoint.sh"]
-    shm_size: '4g'
+  # oracle:
+  #   image: container-registry.oracle.com/database/express:21.3.0-xe
+  #   container_name: oracle
+  #   networks:
+  #     - kafka-network
+  #   ports:
+  #     - "1521:1521"
+  #   restart: always
+  #   environment:
+  #     - ORACLE_PWD=Abc12345
+  #   volumes:
+  #     - oracle-data:/opt/oracle/oradata
+  #     - ./init-oracle.sql:/docker-entrypoint-initdb.d/init-oracle.sql
+  #     - ./entrypoint.sh:/entrypoint.sh
+  #   entrypoint: ["/bin/bash", "/entrypoint.sh"]
+  #   shm_size: '4g'
