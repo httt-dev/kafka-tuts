@@ -8,7 +8,7 @@ const port = 3000;
 // Cấu hình Kafka
 const kafka = new Kafka({
   clientId: 'cdc-timeline-app',
-  brokers: ['192.168.1.5:19092'] // Thay đổi nếu Kafka broker của bạn khác
+  brokers: ['192.168.1.7:19092'] // Thay đổi nếu Kafka broker của bạn khác
 });
 
 // Tạo consumer riêng cho Oracle và PostgreSQL
@@ -56,7 +56,7 @@ const run = async () => {
   });
 
   // Chạy consumer cho Oracle với pattern khớp tất cả table
-  runConsumer(oracleConsumer, /^oracle\.TEST_USER\..+$/, 'Oracle');
+  runConsumer(oracleConsumer, /^oracle\.AIPBODEV\..+$/, 'Oracle');
 
   // Chạy consumer cho PostgreSQL với pattern khớp tất cả table
   runConsumer(postgresConsumer, /^postgres\.public\..+$/, 'postgresql');

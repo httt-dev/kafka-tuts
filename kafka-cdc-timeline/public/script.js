@@ -2,6 +2,20 @@ const oracleTimeline = document.getElementById('oracle-timeline');
 const postgresTimeline = document.getElementById('postgres-timeline');
 const ws = new WebSocket('ws://localhost:6868');
 
+// Hàm hỗ trợ hiển thị giá trị
+function formatValue(value) {
+  if (value === null || value === undefined) {
+    return '&lt;&lt;NULL&gt;&gt;'; // dùng HTML entity cho dấu "<" và ">"
+  }
+  if (value === '') {
+    return '""';
+  }
+  if (typeof value === 'object') {
+    return JSON.stringify(value);
+  }
+  return String(value);
+}
+
 // Hàm tạo bảng từ dữ liệu before và after
 function createTable(before, after) {
   const headers = new Set();
@@ -12,14 +26,18 @@ function createTable(before, after) {
   let tableHTML = '<table><thead><tr><th>Field</th><th>Before</th><th>After</th></tr></thead><tbody>';
 
   headerArray.forEach(header => {
-    const beforeValue = before && before[header] !== undefined ? before[header] : null;
-    const afterValue = after && after[header] !== undefined ? after[header] : null;
-    const isDifferent = JSON.stringify(beforeValue) !== JSON.stringify(afterValue);
-    
+    const beforeValueRaw = before ? before[header] : undefined;
+    const afterValueRaw = after ? after[header] : undefined;
+
+    const beforeDisplay = formatValue(beforeValueRaw);
+    const afterDisplay = formatValue(afterValueRaw);
+
+    const isDifferent = beforeDisplay !== afterDisplay;
+
     tableHTML += '<tr>';
     tableHTML += `<td>${header}</td>`;
-    tableHTML += `<td${isDifferent ? ' class="highlight"' : ''}>${beforeValue != null ? JSON.stringify(beforeValue) : ''}</td>`;
-    tableHTML += `<td${isDifferent ? ' class="highlight"' : ''}>${afterValue != null ? JSON.stringify(afterValue) : ''}</td>`;
+    tableHTML += `<td${isDifferent ? ' class="highlight"' : ''}>${beforeDisplay}</td>`;
+    tableHTML += `<td${isDifferent ? ' class="highlight"' : ''}>${afterDisplay}</td>`;
     tableHTML += '</tr>';
   });
 
@@ -40,7 +58,6 @@ ws.onmessage = (event) => {
   eventDiv.innerHTML = `<h3>${operation} on ${tableName} at ${new Date().toLocaleString()}</h3>`;
   eventDiv.innerHTML += createTable(before, after);
 
-  // Phân loại dữ liệu vào timeline tương ứng
   if (source?.connector === 'oracle') {
     console.log('Adding to Oracle timeline:', data);
     oracleTimeline.insertBefore(eventDiv, oracleTimeline.firstChild);

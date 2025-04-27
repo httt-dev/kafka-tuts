@@ -50,6 +50,12 @@ services:
   kafka-connect:
     image: debezium/connect:3.0.0.Final
     container_name: kafka-connect
+    healthcheck:  
+      test: ["CMD-SHELL", "curl -sf http://localhost:8083/connectors || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
     networks:
       - kafka-network
     ports:
@@ -66,6 +72,38 @@ services:
     volumes:
       - connect-data:/kafka/connect
 
+  kafka-connect-init:
+    image: curlimages/curl
+    container_name: kafka-connect-init
+    networks:
+      - kafka-network
+    depends_on:
+      kafka-connect:
+        condition: service_healthy
+    restart: on-failure  
+    volumes:
+      - ./connectors:/connectors
+    command: >
+      sh -c "
+        echo 'Waiting for Kafka Connect...';
+        timeout 300 bash -c '
+          until curl -sf http://kafka-connect:8083; do
+            sleep 5;
+          done
+        ';
+        for connector in oracle-connector postgres-connector; do
+          if [ -f \"/connectors/\$$connector.json\" ]; then
+            echo 'Starting create connector...';
+            curl -X POST -H 'Content-Type: application/json' \\
+              --data @/connectors/\$$connector.json \\
+              http://kafka-connect:8083/connectors;
+          else
+            echo \"WARN: \$$connector.json not found\";
+          fi;
+        done;
+        
+        tail -f /dev/null
+      "
   # oracle:
   #   image: container-registry.oracle.com/database/express:21.3.0-xe
   #   container_name: oracle
