@@ -104,6 +104,22 @@ services:
         
         tail -f /dev/null
       "
+  topic-creator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: topic-creator
+    networks:
+      - kafka-network
+    depends_on:
+      kafka-connect:
+        condition: service_healthy
+    # volumes:
+    #   - ./create_topics.py:/create_topics.py
+    #   - ./requirements.txt:/requirements.txt
+    # command: >
+    #   bash -c "pip install -r /requirements.txt && python /create_topics.py"
+
   # oracle:
   #   image: container-registry.oracle.com/database/express:21.3.0-xe
   #   container_name: oracle

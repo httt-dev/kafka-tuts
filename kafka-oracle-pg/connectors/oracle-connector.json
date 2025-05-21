@@ -3,14 +3,14 @@
   "config": {
     "connector.class": "io.debezium.connector.oracle.OracleConnector",
     "tasks.max": "1",
-    "database.hostname": "192.168.1.7",
+    "database.hostname": "192.168.1.116",
     "database.port": "1522",
     "database.user": "SYS AS SYSDBA",
     "database.password": "Abc12345",
     "database.dbname": "ORCLPDB1",
     "database.pdb.name": "ORCLPDB1",
     "database.server.name": "oracle-server",
-    "table.include.list": "AIPBODEV.*",
+    // "table.include.list": "AIPDEV.*",
     "log.mining.strategy": "online_catalog",
     "topic.prefix": "oracle",
     "database.history.kafka.bootstrap.servers": "kafka:9092",
@@ -27,6 +27,12 @@
     "topic.creation.default.replication.factor": "1",
     "topic.creation.default.partitions": "1",
     "topic.creation.default.cleanup.policy": "delete",    
-    "topic.creation.default.retention.ms": "86400000" 
+    "topic.creation.default.retention.ms": "86400000" ,
+
+    "table.exclude.list": ".*\\.TMP_.*,.*\\.SYS_TEMP_.*,.*\\$_.*",
+    "log.mining.skip.unparseable.dml.statements": "true",
+    "log.mining.dml.parser.skip.errors": "true",
+    "log.mining.query.filter.mode": "regex",
+    "log.mining.transaction.retention.hours": "0"
   }
 }

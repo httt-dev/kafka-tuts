@@ -114,3 +114,9 @@ END $$;
 -- Thiết lập quyền cho user để có thể đọc log 
 
 ```
+
+### Liệt kê các topic 
+
+```bat
+docker exec -it kafka kafka-topics --list  --bootstrap-server kafka:9092
+```

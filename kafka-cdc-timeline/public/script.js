@@ -55,7 +55,12 @@ ws.onmessage = (event) => {
 
   const operation = op === 'c' ? 'INSERT' : op === 'u' ? 'UPDATE' : 'DELETE';
   const tableName = source?.table || 'Unknown Table';
-  eventDiv.innerHTML = `<h3>${operation} on ${tableName} at ${new Date().toLocaleString()}</h3>`;
+
+  const color = op === 'c' ? '#513eff' : op === 'u' ? '#6ccf11' : '#ff3e3e';
+
+  // Tạo tiêu đề với màu
+  eventDiv.innerHTML = `<h3 style="color: ${color}">${operation} on ${tableName} at ${new Date().toLocaleString('ja-JP', { hour12: false })}</h3>`;
+
   eventDiv.innerHTML += createTable(before, after);
 
   if (source?.connector === 'oracle') {

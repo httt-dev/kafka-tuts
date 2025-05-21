@@ -3,11 +3,11 @@
   "config": {
     "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
     "tasks.max": "1",
-    "database.hostname": "192.168.1.7",
+    "database.hostname": "192.168.1.122",
     "database.port": "5432",
     "database.user": "postgres",
     "database.password": "Abc12345",
-    "database.dbname": "bo_dev_jp_utf8",
+    "database.dbname": "pg_bo_ut",
     "database.server.name": "dbserver_pg",
     "table.include.list": "public.*",
     "publication.autocreate.mode": "all_tables",
