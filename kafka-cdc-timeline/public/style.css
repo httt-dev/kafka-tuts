@@ -8,19 +8,22 @@ h1 {
   text-align: center;
   color: #333;
   margin: 0px 0; /* Giữ khoảng cách nhỏ cho tiêu đề */
+  background-color: ghostwhite;
 }
 
 .container {
   display: flex;
   justify-content: space-between;
-  width: 100%; /* Chiếm toàn chiều rộng màn hình */
-  height: calc(100vh - 60px); /* Trừ chiều cao của h1 và margin */
+  width: 100%;
+  height: calc(100vh - 90px); /* Trừ chiều cao của h1 và footer */
 }
 
 .column {
   width: 50%; /* Chia đôi đều mỗi cột */
   height: 100%; /* Chiếm toàn chiều cao của container */
   overflow-y: auto; /* Thêm thanh cuộn dọc nếu nội dung dài */
+  display: flex;
+  flex-flow: column;
 }
 
 .column h2 {
@@ -37,8 +40,8 @@ h1 {
 
 .event {
   position: relative;
-  margin: 20px 0;
-  padding: 20px;
+  margin: 1px 0;
+  padding: 10px;
   background: white;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -62,7 +65,7 @@ h1 {
   left: -6px;
   top: 50%;
   width: 2px;
-  height: 100%;
+  height: 50%;
   background: #3498db;
   transform: translateY(-50%);
 }
@@ -74,7 +77,7 @@ h1 {
 
 .event:last-child::after {
   height: 50%;
-  top: 0;
+  /*top: 0;*/
 }
 
 .event h3 {
@@ -113,4 +116,128 @@ h1 {
 
 .event td.highlight {
   background-color: #f1c40f !important; /* Highlight khác biệt */
+}
+
+/* Header-row đứng yên khi scroll */
+.header-row {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  background-color: ghostwhite;
+  gap: 50px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 10px 0;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  border-bottom: 1px solid #ddd;
+  
+}
+
+.header-row h2 {
+  margin: 0;
+}
+
+.header-row button {
+  padding: 5px 10px;
+  background-color: #bbadad; /* đỏ */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.header-row button:hover {
+  background-color: #727272;
+}
+
+/* Footer ngoài container */
+#footer {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  padding: 10px;
+  border-top: 1px solid #ddd;
+  width: 100%;
+  box-sizing: border-box;
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
+}
+
+/* Nút trong footer */
+#footer button {
+  padding: 8px 16px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+#footer button:hover {
+  background-color: #2980b9;
+}
+
+
+/* Watermark chung cho các bảng */
+.timeline .event table {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Watermark Oracle */
+#oracle-timeline .event table::before {
+  content: "Oracle";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-30deg);
+  font-size: 60px;
+  color: rgba(0, 0, 0, 0.05);
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 10;
+}
+
+/* Watermark Postgres */
+#postgres-timeline .event table::before {
+  content: "Postgres";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-30deg);
+  font-size: 60px;
+  color: rgba(0, 0, 0, 0.05);
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 10;
+}
+
+/* Đảm bảo nội dung table nằm trên watermark */
+.event table td,
+.event table th {
+  position: relative;
+  z-index: 2;
+  background-color: inherit;
+}
+
+.empty-value {
+  color: #ff00fbeb; 
+  font-weight: 100;
+}
+
+{{/* td:empty::after {
+  content: "<<EMPTY>>";
+  color: #e74c3c;
+  font-weight: bold;
+  opacity: 0.8;
+} */}}
+
+
+.null-value {
+  color: #e74c3c; /* đỏ nổi bật */
+  font-weight: 100;
 }

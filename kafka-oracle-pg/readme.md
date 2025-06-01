@@ -120,3 +120,20 @@ END $$;
 ```bat
 docker exec -it kafka kafka-topics --list  --bootstrap-server kafka:9092
 ```
+
+
+
+### Kiem tra slot trong postgres
+Nếu có lỗi liên quan đến REPLICATION của user 
+
+```sql
+SELECT usename, usesuper, userepl FROM pg_user WHERE usename = 'postgres';
+
+--Nếu mất quyền rep thì cấp lại : 
+-- ALTER ROLE postgres WITH REPLICATION;
+
+ -- Kiểm tra replication slot (nếu bị xóa hoặc lỗi)
+ -- active = false → Slot bị hỏng.
+SELECT * FROM pg_replication_slots;
+SELECT pg_drop_replication_slot('debezium_slot');
+```

@@ -10,7 +10,6 @@
     "database.dbname": "ORCLPDB1",
     "database.pdb.name": "ORCLPDB1",
     "database.server.name": "oracle-server",
-    // "table.include.list": "AIPDEV.*",
     "log.mining.strategy": "online_catalog",
     "topic.prefix": "oracle",
     "database.history.kafka.bootstrap.servers": "kafka:9092",

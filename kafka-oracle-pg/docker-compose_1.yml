@@ -37,7 +37,7 @@ services:
     environment:
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
       - KAFKA_LISTENERS=INTERNAL://0.0.0.0:9092,EXTERNAL://0.0.0.0:19092
-      - KAFKA_ADVERTISED_LISTENERS=INTERNAL://kafka:9092,EXTERNAL://localhost:19092
+      - KAFKA_ADVERTISED_LISTENERS=INTERNAL://kafka:9092,EXTERNAL://192.168.1.199:19092  # Thay đổi địa chỉ IP này thành IP của máy chủ Kafka
       - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
       - KAFKA_INTER_BROKER_LISTENER_NAME=INTERNAL
       - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
@@ -80,7 +80,7 @@ services:
     depends_on:
       kafka-connect:
         condition: service_healthy
-    restart: on-failure  
+    # restart: on-failure 
     volumes:
       - ./connectors:/connectors
     command: >
